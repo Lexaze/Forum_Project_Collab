@@ -12,7 +12,7 @@ const adminOnly = async (req, res, next) => {
 
     // Fetch the user's current role directly from the database
     const [rows] = await pool.execute(
-      "SELECT role FROM users WHERE user_id = ? LIMIT 1",
+      "SELECT role FROM endUser WHERE user_id = ? LIMIT 1",
       [req.user.userId],
     );
 

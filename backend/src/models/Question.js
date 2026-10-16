@@ -20,7 +20,7 @@ const BASE_QUESTION_SELECT = `
     u.last_name  AS author_last_name,
     COUNT(a.id) AS answer_count
   FROM questions q
-  INNER JOIN users u ON u.user_id = q.user_id
+  INNER JOIN endUser u ON u.user_id = q.user_id
   LEFT JOIN answers a ON a.question_id = q.id
 `;
 

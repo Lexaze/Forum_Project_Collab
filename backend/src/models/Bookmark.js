@@ -113,7 +113,7 @@ const Bookmark = {
          b.created_at AS bookmarked_at
        FROM question_bookmarks b
        INNER JOIN questions q ON q.id = b.question_id
-       INNER JOIN users u ON u.user_id = q.user_id
+       INNER JOIN endUser u ON u.user_id = q.user_id
        LEFT JOIN answers a ON a.question_id = q.id
        WHERE b.user_id = ?
        GROUP BY

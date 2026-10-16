@@ -13,9 +13,9 @@ export async function initializeDatabase() {
   });
 
   try {
-    // Create the users table if it does not already exist
+    // Create the endUser table if it does not already exist
     await connection.query(`
-      CREATE TABLE IF NOT EXISTS users (
+      CREATE TABLE IF NOT EXISTS endUser (
         user_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 
         first_name VARCHAR(100) NOT NULL,
@@ -41,21 +41,21 @@ export async function initializeDatabase() {
       COLLATE=utf8mb4_unicode_ci
     `);
 
-    console.log("Users table initialized successfully.");
+    console.log("endUser table initialized successfully.");
 
-    // Ensure profile columns exist on users table for new features
+    // Ensure profile columns exist on the endUser table for new features
     const [userColumns] = await connection.query(`
       SELECT COLUMN_NAME, IS_NULLABLE
       FROM information_schema.COLUMNS
       WHERE TABLE_SCHEMA = DATABASE()
-        AND TABLE_NAME = 'users'
+        AND TABLE_NAME = 'endUser'
     `);
     const existingUserCols = new Map(
       userColumns.map((column) => [column.COLUMN_NAME, column]),
     );
     if (!existingUserCols.has("google_id")) {
       await connection.query(
-        "ALTER TABLE users ADD COLUMN google_id VARCHAR(255) NULL UNIQUE AFTER email",
+        "ALTER TABLE endUser ADD COLUMN google_id VARCHAR(255) NULL UNIQUE AFTER email",
       );
     }
 
@@ -63,42 +63,42 @@ export async function initializeDatabase() {
     // NOT NULL constraint need this additive change for Google-only users.
     if (existingUserCols.get("password_hash")?.IS_NULLABLE === "NO") {
       await connection.query(
-        "ALTER TABLE users MODIFY COLUMN password_hash VARCHAR(255) NULL",
+        "ALTER TABLE endUser MODIFY COLUMN password_hash VARCHAR(255) NULL",
       );
     }
 
     if (!existingUserCols.has("avatar_url")) {
       await connection.query(
-        "ALTER TABLE users ADD COLUMN avatar_url VARCHAR(500) NULL AFTER email",
+        "ALTER TABLE endUser ADD COLUMN avatar_url VARCHAR(500) NULL AFTER email",
       );
     }
     if (!existingUserCols.has("headline")) {
       await connection.query(
-        "ALTER TABLE users ADD COLUMN headline VARCHAR(150) NULL",
+        "ALTER TABLE endUser ADD COLUMN headline VARCHAR(150) NULL",
       );
     }
     if (!existingUserCols.has("bio")) {
-      await connection.query("ALTER TABLE users ADD COLUMN bio TEXT NULL");
+      await connection.query("ALTER TABLE endUser ADD COLUMN bio TEXT NULL");
     }
     if (!existingUserCols.has("location")) {
       await connection.query(
-        "ALTER TABLE users ADD COLUMN location VARCHAR(100) NULL",
+        "ALTER TABLE endUser ADD COLUMN location VARCHAR(100) NULL",
       );
     }
     if (!existingUserCols.has("github_url")) {
       await connection.query(
-        "ALTER TABLE users ADD COLUMN github_url VARCHAR(255) NULL",
+        "ALTER TABLE endUser ADD COLUMN github_url VARCHAR(255) NULL",
       );
     }
     if (!existingUserCols.has("portfolio_url")) {
       await connection.query(
-        "ALTER TABLE users ADD COLUMN portfolio_url VARCHAR(255) NULL",
+        "ALTER TABLE endUser ADD COLUMN portfolio_url VARCHAR(255) NULL",
       );
     }
 
     if (!existingUserCols.has("role")) {
       await connection.query(
-        "ALTER TABLE users ADD COLUMN role VARCHAR(20) NOT NULL DEFAULT 'user'",
+        "ALTER TABLE endUser ADD COLUMN role VARCHAR(20) NOT NULL DEFAULT 'user'",
       );
     }
 
@@ -118,7 +118,7 @@ export async function initializeDatabase() {
           ON UPDATE CURRENT_TIMESTAMP,
 
         CONSTRAINT fk_questions_user
-          FOREIGN KEY (user_id) REFERENCES users(user_id)
+          FOREIGN KEY (user_id) REFERENCES endUser(user_id)
       )
       ENGINE=InnoDB
       DEFAULT CHARSET=utf8mb4
@@ -178,7 +178,7 @@ export async function initializeDatabase() {
         CONSTRAINT fk_answers_question
           FOREIGN KEY (question_id) REFERENCES questions(id),
         CONSTRAINT fk_answers_user
-          FOREIGN KEY (user_id) REFERENCES users(user_id)
+          FOREIGN KEY (user_id) REFERENCES endUser(user_id)
       )
       ENGINE=InnoDB
       DEFAULT CHARSET=utf8mb4
@@ -198,7 +198,7 @@ export async function initializeDatabase() {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         CONSTRAINT fk_documents_user
-          FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+          FOREIGN KEY (user_id) REFERENCES endUser(user_id) ON DELETE CASCADE,
         INDEX idx_documents_user_created (user_id, created_at)
       )
       ENGINE=InnoDB
@@ -290,7 +290,7 @@ export async function initializeDatabase() {
         CONSTRAINT fk_replies_answer
           FOREIGN KEY (answer_id) REFERENCES answers(id) ON DELETE CASCADE,
         CONSTRAINT fk_replies_user
-          FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+          FOREIGN KEY (user_id) REFERENCES endUser(user_id) ON DELETE CASCADE,
         INDEX idx_replies_answer_id (answer_id)
       )
       ENGINE=InnoDB
@@ -310,7 +310,7 @@ export async function initializeDatabase() {
         PRIMARY KEY (user_id, question_id),
 
         CONSTRAINT fk_bookmarks_user
-          FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+          FOREIGN KEY (user_id) REFERENCES endUser(user_id) ON DELETE CASCADE,
 
         CONSTRAINT fk_bookmarks_question
           FOREIGN KEY (question_id) REFERENCES questions(id) ON DELETE CASCADE,

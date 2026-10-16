@@ -12,7 +12,7 @@ const ANSWER_SELECT = `
     u.first_name AS author_first_name,
     u.last_name AS author_last_name
   FROM answers a
-  INNER JOIN users u ON u.user_id = a.user_id
+  INNER JOIN endUser u ON u.user_id = a.user_id
 `;
 
 const mapAnswerRow = (row) => ({

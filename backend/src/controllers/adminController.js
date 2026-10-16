@@ -6,7 +6,7 @@ import pool from "../config/db.js";
 export const getDashboardStats = async (req, res, next) => {
   try {
     // 1. Ask MySQL to count rows in each table
-    const [userRows] = await pool.query("SELECT COUNT(*) AS count FROM users");
+    const [userRows] = await pool.query("SELECT COUNT(*) AS count FROM endUser");
     const [questionRows] = await pool.query(
       "SELECT COUNT(*) AS count FROM questions",
     );
@@ -50,7 +50,7 @@ export const getAdminUsers = async (req, res, next) => {
         email,
         role,
         created_at
-      FROM users
+      FROM endUser
     `;
     const params = [];
 
@@ -96,7 +96,7 @@ export const deleteAdminUser = async (req, res, next) => {
 
     // Check if user exists
     const [targetUser] = await connection.execute(
-      "SELECT user_id, first_name, last_name FROM users WHERE user_id = ? LIMIT 1",
+      "SELECT user_id, first_name, last_name FROM endUser WHERE user_id = ? LIMIT 1",
       [userId],
     );
 
@@ -133,7 +133,7 @@ export const deleteAdminUser = async (req, res, next) => {
     await connection.execute("DELETE FROM questions WHERE user_id = ?", [userId]);
 
     // 5. Finally remove the user record
-    await connection.execute("DELETE FROM users WHERE user_id = ?", [userId]);
+    await connection.execute("DELETE FROM endUser WHERE user_id = ?", [userId]);
 
     // Commit the entire transaction
     await connection.commit();
@@ -170,7 +170,7 @@ export const getAdminQuestions = async (req, res, next) => {
         u.last_name,
         u.email
       FROM questions q
-      JOIN users u ON q.user_id = u.user_id
+      JOIN endUser u ON q.user_id = u.user_id
     `;
     const params = [];
 

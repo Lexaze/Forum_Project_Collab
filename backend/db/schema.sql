@@ -2,7 +2,7 @@ CREATE DATABASE IF NOT EXISTS ai_powered_evangadi_forum;
 
 USE ai_powered_evangadi_forum;
 
-CREATE TABLE IF NOT EXISTS users (
+CREATE TABLE IF NOT EXISTS endUser (
     user_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS questions (
     content TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    CONSTRAINT fk_questions_user FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE,
+    CONSTRAINT fk_questions_user FOREIGN KEY (user_id) REFERENCES endUser (user_id) ON DELETE CASCADE,
     INDEX idx_questions_user_id (user_id),
     INDEX idx_questions_created_at (created_at)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS answers (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT fk_answers_question FOREIGN KEY (question_id) REFERENCES questions (id) ON DELETE CASCADE,
-    CONSTRAINT fk_answers_user FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE,
+    CONSTRAINT fk_answers_user FOREIGN KEY (user_id) REFERENCES endUser (user_id) ON DELETE CASCADE,
     INDEX idx_answers_question_id (question_id)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
@@ -78,7 +78,7 @@ CREATE TABLE IF NOT EXISTS documents (
 
     CONSTRAINT fk_documents_user
         FOREIGN KEY (user_id)
-        REFERENCES users (user_id)
+        REFERENCES endUser (user_id)
         ON DELETE CASCADE,
 
     INDEX idx_documents_user_created (user_id, created_at)
@@ -155,7 +155,7 @@ CREATE TABLE IF NOT EXISTS question_bookmarks (
     PRIMARY KEY (user_id, question_id),
 
     CONSTRAINT fk_bookmarks_user
-        FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+        FOREIGN KEY (user_id) REFERENCES endUser(user_id) ON DELETE CASCADE,
 
     CONSTRAINT fk_bookmarks_question
         FOREIGN KEY (question_id) REFERENCES questions(id) ON DELETE CASCADE,
@@ -175,7 +175,6 @@ CREATE TABLE IF NOT EXISTS replies (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     
     CONSTRAINT fk_replies_answer FOREIGN KEY (answer_id) REFERENCES answers (id) ON DELETE CASCADE,
-    CONSTRAINT fk_replies_user FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE,
+    CONSTRAINT fk_replies_user FOREIGN KEY (user_id) REFERENCES endUser (user_id) ON DELETE CASCADE,
     INDEX idx_replies_answer_id (answer_id)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
-

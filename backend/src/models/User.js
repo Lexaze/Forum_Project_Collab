@@ -4,7 +4,7 @@ const User = {
    async create({ firstName, lastName, email, passwordHash, role = "user" }) {
     const [result] = await pool.execute(
       `
-      INSERT INTO users
+      INSERT INTO endUser
         (first_name, last_name, email, password_hash, role)
       VALUES
         (?, ?, ?, ?, ?)
@@ -35,7 +35,7 @@ const User = {
         avatar_url,
         headline,
         created_at
-      FROM users
+      FROM endUser
       WHERE email = ?
       LIMIT 1
       `,
@@ -59,7 +59,7 @@ const User = {
         avatar_url,
         headline,
         created_at
-      FROM users
+      FROM endUser
       WHERE google_id = ?
       LIMIT 1
       `,
@@ -79,7 +79,7 @@ const User = {
   }) {
     const [result] = await pool.execute(
       `
-      INSERT INTO users
+      INSERT INTO endUser
         (first_name, last_name, email, google_id, password_hash, avatar_url, role)
       VALUES
         (?, ?, ?, ?, NULL, ?, ?)
@@ -101,7 +101,7 @@ const User = {
     if (avatarUrl) {
       await pool.execute(
         `
-        UPDATE users
+        UPDATE endUser
         SET google_id = ?,
             avatar_url = COALESCE(avatar_url, ?)
         WHERE user_id = ?
@@ -111,7 +111,7 @@ const User = {
     } else {
       await pool.execute(
         `
-        UPDATE users
+        UPDATE endUser
         SET google_id = ?
         WHERE user_id = ?
         `,
@@ -139,7 +139,7 @@ const User = {
         github_url,
         portfolio_url,
         created_at
-      FROM users
+      FROM endUser
       WHERE user_id = ?
       LIMIT 1
       `,
@@ -158,7 +158,7 @@ const User = {
         last_name,
         email,
         password_hash
-      FROM users
+      FROM endUser
       WHERE user_id = ?
       LIMIT 1
       `,
@@ -186,7 +186,7 @@ const User = {
         u.created_at,
         (SELECT COUNT(*) FROM questions WHERE user_id = u.user_id) AS questions_count,
         (SELECT COUNT(*) FROM answers WHERE user_id = u.user_id) AS answers_count
-      FROM users u
+      FROM endUser u
       WHERE u.user_id = ?
       LIMIT 1
       `,
@@ -200,7 +200,7 @@ const User = {
   async updateProfile(userId, { headline, bio, location, githubUrl, portfolioUrl }) {
     await pool.execute(
       `
-      UPDATE users
+      UPDATE endUser
       SET headline = ?, bio = ?, location = ?, github_url = ?, portfolio_url = ?
       WHERE user_id = ?
       `,
@@ -219,7 +219,7 @@ const User = {
   async updateAvatar(userId, avatarUrl) {
     await pool.execute(
       `
-      UPDATE users
+      UPDATE endUser
       SET avatar_url = ?
       WHERE user_id = ?
       `,
@@ -231,7 +231,7 @@ const User = {
   async updateAccount(userId, { firstName, lastName, email }) {
     await pool.execute(
       `
-      UPDATE users
+      UPDATE endUser
       SET first_name = ?, last_name = ?, email = ?
       WHERE user_id = ?
       `,
@@ -243,7 +243,7 @@ const User = {
   async updatePassword(userId, passwordHash) {
     await pool.execute(
       `
-      UPDATE users
+      UPDATE endUser
       SET password_hash = ?
       WHERE user_id = ?
       `,

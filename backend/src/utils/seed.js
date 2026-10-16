@@ -139,7 +139,7 @@ async function seed() {
 
   for (const u of users) {
     const [existing] = await pool.query(
-      "SELECT user_id FROM users WHERE email = ?",
+      "SELECT user_id FROM endUser WHERE email = ?",
       [u.email],
     );
     if (existing.length > 0) {
@@ -149,7 +149,7 @@ async function seed() {
     }
     const passwordHash = await bcrypt.hash(u.password, 10);
     const [result] = await pool.query(
-      "INSERT INTO users (first_name, last_name, email, password_hash) VALUES (?, ?, ?, ?)",
+      "INSERT INTO endUser (first_name, last_name, email, password_hash) VALUES (?, ?, ?, ?)",
       [u.firstName, u.lastName, u.email, passwordHash],
     );
     userIdByEmail[u.email] = result.insertId;

@@ -1681,11 +1681,11 @@ For existing manual databases, the equivalent SQL is:
 
 ```sql
 -- Apply the first statement only when google_id does not already exist.
-ALTER TABLE users
+ALTER TABLE endUser
 ADD COLUMN google_id VARCHAR(255) NULL UNIQUE AFTER email;
 
 -- Google-only accounts have no local password.
-ALTER TABLE users
+ALTER TABLE endUser
 MODIFY COLUMN password_hash VARCHAR(255) NULL;
 ```
 
