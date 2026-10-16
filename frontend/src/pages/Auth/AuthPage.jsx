@@ -127,7 +127,7 @@ const AuthPage = () => {
     if (!isGoogleAuthConfigured) {
       return (
         <div className={styles.googleConfigNotice} role="alert">
-          Google Sign-In is disabled: <code>VITE_GOOGLE_CLIENT_ID</code> is not configured.
+          {/* Google Sign-In is disabled: <code>VITE_GOOGLE_CLIENT_ID</code> is not configured. */}
         </div>
       );
     }
